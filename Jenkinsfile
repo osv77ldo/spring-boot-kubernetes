@@ -44,7 +44,7 @@ pipeline {
         stage('Sonarqube') {
             steps {
                 script {
-                    def scannerHome = tool name: 'sonar_scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+                    def scannerHome = tool 'SonarScanner 4.0';
 
                     withSonarQubeEnv('Sonar Server') {
                         sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ms-maven -Dsonar.sources=. -Dsonar.java.binaries=target/classes -Dsonar.exclusions='**/*/test/**/*, **/*/acceptance-test/**/*, **/*.html'"
