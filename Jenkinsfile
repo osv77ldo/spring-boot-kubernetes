@@ -7,8 +7,8 @@ pipeline {
     }
 
     stages {
-        stage('initial'){
-            steps{
+        stage('initial') {
+            steps {
                 sh '''
                     echo "PATH = ${PATH}"
                     echo "M2_HOME = ${M2_HOME}"
@@ -17,13 +17,19 @@ pipeline {
             }
         }
 
-        stage('compile'){
+        stage('compile') {
             tools {
-                   jdk 'Java'
-                }
+                jdk 'Java'
+            }
                 steps {
                     sh 'java -version'
                     sh 'mvn -B package --file pom.xml'
+                }
+        }
+
+        stage('test') {
+                steps {
+                    sh 'mvn test'
                 }
         }
     }
