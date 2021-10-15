@@ -9,21 +9,22 @@ pipeline {
     stages {
         stage('initial'){
             steps{
-             sh '''
-              echo "PATH = ${PATH}"
-              echo "M2_HOME = ${M2_HOME}"
-              java -version
-              '''
+                sh '''
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                    javac -version
+                '''
             }
         }
 
         stage('compile'){
-            agent {
-            docker { image 'openjdk:8-jdk-alpine' }
-            }
-        steps {
-            mvn -B package --file pom.xml
-        }
+            tools {
+                   jdk 'Java'
+                }
+                steps {
+                    sh 'java -version'
+                    sh 'mvn -B package --file pom.xml'
+                }
         }
     }
 }
