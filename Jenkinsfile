@@ -6,7 +6,6 @@ pipeline {
         nodejs 'NodeJs'
     }
 
-  
     stages {
         stage('initial'){
             steps{
@@ -16,12 +15,15 @@ pipeline {
               java -version
               '''
             }
-        }       
+        }
 
         stage('compile'){
-            steps{
-             sh 'mvn -B package --file pom.xml'
+            agent {
+            docker { image 'openjdk:8-jdk-alpine' }
             }
-        }    
-}
+        steps {
+            mvn -B package --file pom.xml
+        }
+        }
+    }
 }
