@@ -54,7 +54,6 @@ pipeline {
         }
         stage('DAST'){
             steps{
-                figlet 'Owasp Zap DAST'
         		
         		script{
         		   env.DOCKER = tool "Docker"
