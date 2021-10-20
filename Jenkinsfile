@@ -65,16 +65,31 @@ pipeline {
                     sh '${DOCKER_EXEC} run --add-host="localhost:0.0.0.0" --rm -e LC_ALL=C.UTF-8 -e LANG=C.UTF-8 --name zap2 -u zap -p 8090:8090 -d owasp/zap2docker-stable zap.sh -daemon -port 8090 -host 0.0.0.0 -config api.disablekey=true'
                     sh '${DOCKER_EXEC} run --add-host="localhost:0.0.0.0" -v $(pwd):/zap/wrk/:rw --rm -i owasp/zap2docker-stable zap-baseline.py -t "http://zero.webappsecurity.com" -I -r zap_baseline_report.html -l PASS'	
         		   
-        		   publishHTML([
+        		   publishHTML(target: [
         				    allowMissing: false,
-        				    alwaysLinkToLastBuild: false,
-        				    keepAll: false,
-        				    reportDir: '/Users/ojgonzalez/Desktop/report',
+        				    alwaysLinkToLastBuild: true,
+        				    keepAll: true,
+        				    reportDir: 'reports',
         				    reportFiles: 'zap_baseline_report.html',
         				    reportName: 'HTML Report',
-        				    reportTitles: ''])
+        				    reportTitles: 'The Report'])
         		}
             }
         }
+
+        stage('Trivy'){
+                    			steps{
+                    		        script{
+                    		            env.DOCKER = tool "Docker"
+        				                env.DOCKER_EXEC = "${DOCKER}/bin/docker"
+
+                                        sh '''
+                                            ${DOCKER_EXEC} run --rm -v $(pwd):/root/.cache/ aquasec/trivy python:3.4-alpine
+                                        '''
+
+                                         sh '${DOCKER_EXEC} rmi aquasec/trivy'
+                    		        }
+                    			}
+            }
     }
 }
